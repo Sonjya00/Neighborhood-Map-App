@@ -6,7 +6,8 @@ import neighborhoodData from "./Neighborhood-Places.js";
 export default class MapContainer extends Component {
   state = {
     neighborhood: neighborhoodData.neighborhoodLoc, // center of the map
-    allPlaces: neighborhoodData.allPlaces // all venues
+    allPlaces: neighborhoodData.allPlaces, // all venues
+    infowindow: null
   };
 
   componentDidMount() {
@@ -28,8 +29,49 @@ export default class MapContainer extends Component {
         }
       );
       this.map = new maps.Map(node, mapConfig);
+      this.makeMarkers();
     }
   }
+  makeMarkers = () => {
+    const { google } = this.props;
+    const maps = google.maps;
+    this.state.allPlaces.forEach((place, index) => {
+      const marker = new maps.Marker({
+        position: place.position,
+        map: this.map,
+        title: place.name,
+        animation: maps.Animation.DROP,
+        id: index
+      });
+      marker.addListener("click", () => {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(() => marker.setAnimation(google.maps.Animation.NULL));
+        this.populateInfoWindow(marker);
+      });
+    });
+  };
+
+  populateInfoWindow = marker => {
+    const infowindow = new this.props.google.maps.InfoWindow();
+    if (infowindow.marker !== marker) {
+      if (this.state.infowindow !== null) {
+        this.state.infowindow.close();
+      }
+      infowindow.marker = marker;
+      infowindow.setContent(`<h3>${marker.title}</h3>`);
+      infowindow.addListener("closeclick", () => {
+        // infowindow.marker = null;
+        this.setState({
+          infowindow: null
+        });
+      });
+      infowindow.open(this.map, marker);
+      this.setState({
+        infowindow: infowindow
+      });
+    }
+  };
+
   render() {
     return (
       <div className="main-container">
@@ -40,7 +82,9 @@ export default class MapContainer extends Component {
           </p>
           <ul className="place-list__list">
             {this.state.allPlaces.map(place => (
-              <li className="place-list__item">{place.name}</li>
+              <li key={place.id} className="place-list__item">
+                {place.name}
+              </li>
             ))}
           </ul>
         </div>
