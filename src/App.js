@@ -13,6 +13,7 @@ class App extends Component {
         <header className="main-header">
           <h1>My Neighborhood Map App</h1>
         </header>
+        {/* Placelist & Map */}
         <MapContainer google={this.props.google} />
       </div>
     );

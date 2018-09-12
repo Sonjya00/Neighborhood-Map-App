@@ -1,28 +1,77 @@
-.App {
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Raleway", sans-serif;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+}
+
+.main-container {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.main-header {
+  background-color: lightblue;
+  color: #333;
+  padding: 15px;
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.map__container {
+  width: 70%;
+  height: 100vh;
+  border: 1px solid #333;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+.place-list__container {
   color: white;
+  line-height: 30px;
+  height: 100%;
+  padding: 5px;
+  width: 30%;
 }
 
-.App-title {
-  font-size: 1.5em;
+.place-list__title {
+  text-align: center;
+  letter-spacing: 2px;
+  margin: 20px auto;
 }
 
-.App-intro {
-  font-size: large;
+.place-list__description {
+  margin: 20px auto;
+  text-align: center;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.place-list__list {
+  padding: 0;
+}
+
+.place-list__item {
+  padding-left: 30px;
+}
+
+.place-list__item:hover {
+  background-color: ivory;
+  color: #333;
+}
+
+.place-list__item:before {
+  content: "";
+  display: inline-block;
+  border: 1px solid ivory;
+  width: 5px;
+  margin: 5px 10px 5px auto;
+}
+.place-list__item:hover:before {
+  content: "";
+  display: inline-block;
+  border: 1px solid #333;
+  width: 5px;
+  margin: 5px 10px 5px auto;
 }
