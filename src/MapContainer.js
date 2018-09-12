@@ -7,6 +7,7 @@ export default class MapContainer extends Component {
   state = {
     neighborhood: neighborhoodData.neighborhoodLoc, // center of the map
     allPlaces: neighborhoodData.allPlaces, // all venues
+    activeMarker: null,
     infowindow: null
   };
 
@@ -35,20 +36,48 @@ export default class MapContainer extends Component {
   makeMarkers = () => {
     const { google } = this.props;
     const maps = google.maps;
+    const defaultIcon = this.makeMarkerIcon("AED8E5");
+    const highlightedIcon = this.makeMarkerIcon("00a2d3");
+
     this.state.allPlaces.forEach((place, index) => {
       const marker = new maps.Marker({
         position: place.position,
         map: this.map,
         title: place.name,
         animation: maps.Animation.DROP,
-        id: index
+        id: index,
+        icon: defaultIcon
       });
       marker.addListener("click", () => {
+        marker.setIcon(highlightedIcon);
         marker.setAnimation(google.maps.Animation.BOUNCE);
-        setTimeout(() => marker.setAnimation(google.maps.Animation.NULL));
+        setTimeout(() => marker.setAnimation(google.maps.Animation.NULL), 300);
+        if (this.state.activeMarker !== null) {
+          this.state.activeMarker.setIcon(defaultIcon);
+        }
+        this.setState({
+          activeMarker: marker
+        });
         this.populateInfoWindow(marker);
       });
     });
+  };
+
+  makeMarkerIcon = markerColor => {
+    const { google } = this.props;
+    const markerImage = new google.maps.MarkerImage(
+      "http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|" +
+        markerColor +
+        "|40|_|%E2%80%A2",
+      // new this.props.google.maps.Size(21, 34),
+      // new this.props.google.maps.Point(0, 0),
+      // new this.props.google.maps.Point(10, 34),
+      null,
+      null,
+      null,
+      new google.maps.Size(25, 42)
+    );
+    return markerImage;
   };
 
   populateInfoWindow = marker => {
