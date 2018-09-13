@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-
+import PlaceList from "./PlaceList.js";
 import neighborhoodData from "./Neighborhood-Places.js";
 
 export default class MapContainer extends Component {
   state = {
     neighborhood: neighborhoodData.neighborhoodLoc, // center of the map
     allPlaces: neighborhoodData.allPlaces, // all venues
+    allMarkers: [],
     activeMarker: null,
     infowindow: null
   };
@@ -36,8 +37,10 @@ export default class MapContainer extends Component {
   makeMarkers = () => {
     const { google } = this.props;
     const maps = google.maps;
+    const bounds = new google.maps.LatLngBounds();
+    const allMarkers = [];
+
     const defaultIcon = this.makeMarkerIcon("AED8E5");
-    const highlightedIcon = this.makeMarkerIcon("00a2d3");
 
     this.state.allPlaces.forEach((place, index) => {
       const marker = new maps.Marker({
@@ -48,19 +51,43 @@ export default class MapContainer extends Component {
         id: index,
         icon: defaultIcon
       });
+
+      // When a marker is clicked, make it active, and color the item in the list
       marker.addListener("click", () => {
-        marker.setIcon(highlightedIcon);
-        marker.setAnimation(google.maps.Animation.BOUNCE);
-        setTimeout(() => marker.setAnimation(google.maps.Animation.NULL), 300);
-        if (this.state.activeMarker !== null) {
-          this.state.activeMarker.setIcon(defaultIcon);
-        }
-        this.setState({
-          activeMarker: marker
-        });
-        this.populateInfoWindow(marker);
+        this.colorPlaceList(place);
+        this.setActiveMarker(marker);
       });
+
+      bounds.extend(marker.position);
+      allMarkers.push(marker);
     });
+
+    // Store all markers in the state to retrieve later
+    this.setState({
+      allMarkers: allMarkers
+    });
+    this.map.fitBounds(bounds);
+  };
+
+  setActiveMarker = marker => {
+    const { google } = this.props;
+    const defaultIcon = this.makeMarkerIcon("AED8E5");
+    // const hoveredIcon = this.makeMarkerIcon("00a2d3");
+    const activeIcon = this.makeMarkerIcon("10637c");
+
+    marker.setIcon(activeIcon);
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(() => marker.setAnimation(google.maps.Animation.NULL), 300);
+    if (
+      this.state.activeMarker !== null &&
+      this.state.activeMarker !== marker
+    ) {
+      this.state.activeMarker.setIcon(defaultIcon);
+    }
+    this.setState({
+      activeMarker: marker
+    });
+    this.populateInfoWindow(marker);
   };
 
   makeMarkerIcon = markerColor => {
@@ -101,24 +128,32 @@ export default class MapContainer extends Component {
     }
   };
 
+  selectPlaceFromList = place => {
+    this.colorPlaceList(place);
+    const selectedMarker = this.state.allMarkers.find(
+      marker => marker.id === place.id
+    );
+    this.setActiveMarker(selectedMarker);
+  };
+
+  colorPlaceList = place => {
+    document
+      .querySelectorAll(".place-list__item")
+      .forEach(li => li.classList.remove("selected-li"));
+    document.getElementById(place.id).classList.add("selected-li");
+  };
+
   render() {
     return (
       <div className="main-container">
-        <div className="place-list__container">
-          <h2 className="place-list__title">Favorite places</h2>
-          <p className="place-list__description">
-            A list of my favorite places in Koreatown Los Angeles
-          </p>
-          <ul className="place-list__list">
-            {this.state.allPlaces.map(place => (
-              <li key={place.id} className="place-list__item">
-                {place.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div ref="map" className="map__container">
-          Loading map...
+        <PlaceList
+          allPlaces={this.state.allPlaces}
+          selectPlaceFromList={this.selectPlaceFromList}
+        />
+        <div className="map__container">
+          <div ref="map" className="map">
+            Loading map...
+          </div>
         </div>
       </div>
     );

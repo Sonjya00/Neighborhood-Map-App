@@ -76,6 +76,14 @@ const neighborhoodData = {
         lat: 34.0638,
         lng: -118.2946
       }
+    },
+    {
+      name: "Cafe Korobokgur",
+      id: 9,
+      position: {
+        lat: 34.0576,
+        lng: -118.3056
+      }
     }
   ]
 };
