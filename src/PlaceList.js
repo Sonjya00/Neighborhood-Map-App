@@ -26,7 +26,12 @@ class PlaceList extends Component {
             <li
               key={index}
               id={place.id}
-              className="place-list__item"
+              className={
+                this.props.activeMarker &&
+                this.props.activeMarker.id === place.id
+                  ? "place-list__item selected-li"
+                  : "place-list__item"
+              }
               onClick={() => this.handleClick(place)}
             >
               {place.name}

@@ -10,11 +10,11 @@ export default class MapContainer extends Component {
   state = {
     neighborhood: neighborhoodData.neighborhoodLoc, // center of the map
     allPlaces: neighborhoodData.allPlaces, // all venues
-    showingPlaces: [],
-    allMarkers: [],
-    activeMarker: null,
-    infowindow: null,
-    query: ""
+    showingPlaces: [], // filtered places based on current query
+    allMarkers: [], // all markers for all venues
+    activeMarker: null, // currently selected marker
+    infowindow: null, // pop up window
+    query: "" // query from the search bar
   };
 
   componentDidMount() {
@@ -44,9 +44,9 @@ export default class MapContainer extends Component {
     const maps = google.maps;
     const bounds = new google.maps.LatLngBounds();
     const allMarkers = [];
-
     const defaultIcon = this.makeMarkerIcon("AED8E5");
 
+    // Make all markers
     this.state.allPlaces.forEach(place => {
       const marker = new maps.Marker({
         position: place.position,
@@ -56,43 +56,43 @@ export default class MapContainer extends Component {
         id: place.id,
         icon: defaultIcon
       });
-
-      // When a marker is clicked, make it active, and color the item in the list
+      // When a marker is clicked, it is animated and becomes active,
+      // replacing any previously selected marker
       marker.addListener("click", () => {
-        this.colorPlaceList(place);
-        this.setActiveMarker(marker);
+        this.handleActiveMarker(marker);
       });
-
       bounds.extend(marker.position);
       allMarkers.push(marker);
     });
-
     // Store all markers in the state to retrieve later
     this.setState({
       allMarkers: allMarkers
     });
+    // Adjust map to fit all the markers
     this.map.fitBounds(bounds);
   };
 
-  setActiveMarker = marker => {
+  handleActiveMarker = marker => {
     const { google } = this.props;
     const defaultIcon = this.makeMarkerIcon("AED8E5");
-    // const hoveredIcon = this.makeMarkerIcon("00a2d3");
     const activeIcon = this.makeMarkerIcon("10637c");
-
-    marker.setIcon(activeIcon);
-    marker.setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(() => marker.setAnimation(google.maps.Animation.NULL), 300);
+    // set to default icon previously selected marker.
     if (
       this.state.activeMarker !== null &&
       this.state.activeMarker !== marker
     ) {
       this.state.activeMarker.setIcon(defaultIcon);
     }
-    this.setState({
-      activeMarker: marker
-    });
-    this.populateInfoWindow(marker);
+    // if a valid marker is passed, set it to activeMarker
+    if (marker && marker !== this.state.activeMarker) {
+      marker.setIcon(activeIcon);
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(() => marker.setAnimation(google.maps.Animation.NULL), 300);
+      this.setState({
+        activeMarker: marker
+      });
+      this.populateInfoWindow(marker);
+    }
   };
 
   makeMarkerIcon = markerColor => {
@@ -114,38 +114,35 @@ export default class MapContainer extends Component {
 
   populateInfoWindow = marker => {
     const infowindow = new this.props.google.maps.InfoWindow();
-    if (infowindow.marker !== marker) {
-      if (this.state.infowindow !== null) {
-        this.state.infowindow.close();
-      }
-      infowindow.marker = marker;
-      infowindow.setContent(`<h3>${marker.title}</h3>`);
-      infowindow.addListener("closeclick", () => {
-        // infowindow.marker = null;
-        this.setState({
-          infowindow: null
-        });
-      });
-      infowindow.open(this.map, marker);
-      this.setState({
-        infowindow: infowindow
-      });
+    // if there's an open infowindow in the state, close it.
+    // In any case, associate the infowindow with the currently selected marker,
+    // Set its content, add the listener to close it, then open it.
+    // Lastly, set this infowindow to be the current one in the state.
+
+    // if (infowindow.marker !== marker) {
+    if (this.state.infowindow !== null) {
+      this.state.infowindow.close();
     }
+    infowindow.marker = marker;
+    infowindow.setContent(`<h3>${marker.title}</h3>`);
+    infowindow.addListener("closeclick", () => {
+      // infowindow.marker = null;
+      this.setState({
+        infowindow: null
+      });
+    });
+    infowindow.open(this.map, marker);
+    this.setState({
+      infowindow: infowindow
+    });
+    // }
   };
 
   selectPlaceFromList = place => {
-    this.colorPlaceList(place);
     const selectedMarker = this.state.allMarkers.find(
       marker => marker.id === place.id
     );
-    this.setActiveMarker(selectedMarker);
-  };
-
-  colorPlaceList = place => {
-    document
-      .querySelectorAll(".place-list__item")
-      .forEach(li => li.classList.remove("selected-li"));
-    document.getElementById(place.id).classList.add("selected-li");
+    this.handleActiveMarker(selectedMarker);
   };
 
   queryFilter = query => {
@@ -156,8 +153,9 @@ export default class MapContainer extends Component {
       this.state.infowindow.close();
     }
     this.setState({
-      query: query,
+      activeMarker: null,
       infowindow: null,
+      query: query,
       // filter the places
       showingPlaces: this.state.allPlaces.filter(place =>
         match.test(place.name)
@@ -169,6 +167,7 @@ export default class MapContainer extends Component {
         ? marker.setVisible(true)
         : marker.setVisible(false);
     });
+    this.handleActiveMarker(null);
   };
 
   render() {
@@ -181,6 +180,7 @@ export default class MapContainer extends Component {
           ).sort(sortBy("name"))}
           selectPlaceFromList={this.selectPlaceFromList}
           queryFilter={this.queryFilter}
+          activeMarker={this.state.activeMarker}
         />
         <div className="map__container">
           <div ref="map" className="map">
