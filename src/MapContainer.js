@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import escapeRegExp from "escape-string-regexp";
+import sortBy from "sort-by";
+
 import PlaceList from "./PlaceList.js";
 import neighborhoodData from "./Neighborhood-Places.js";
 
@@ -7,9 +10,11 @@ export default class MapContainer extends Component {
   state = {
     neighborhood: neighborhoodData.neighborhoodLoc, // center of the map
     allPlaces: neighborhoodData.allPlaces, // all venues
+    showingPlaces: [],
     allMarkers: [],
     activeMarker: null,
-    infowindow: null
+    infowindow: null,
+    query: ""
   };
 
   componentDidMount() {
@@ -42,13 +47,13 @@ export default class MapContainer extends Component {
 
     const defaultIcon = this.makeMarkerIcon("AED8E5");
 
-    this.state.allPlaces.forEach((place, index) => {
+    this.state.allPlaces.forEach(place => {
       const marker = new maps.Marker({
         position: place.position,
         map: this.map,
         title: place.name,
         animation: maps.Animation.DROP,
-        id: index,
+        id: place.id,
         icon: defaultIcon
       });
 
@@ -143,12 +148,39 @@ export default class MapContainer extends Component {
     document.getElementById(place.id).classList.add("selected-li");
   };
 
+  queryFilter = query => {
+    // variable to filter places and markers
+    const match = new RegExp(escapeRegExp(query), "i");
+    // close the infowindow if there is one open
+    if (this.state.infowindow) {
+      this.state.infowindow.close();
+    }
+    this.setState({
+      query: query,
+      infowindow: null,
+      // filter the places
+      showingPlaces: this.state.allPlaces.filter(place =>
+        match.test(place.name)
+      )
+    });
+    // filter the markers and show/hide them
+    this.state.allMarkers.forEach(marker => {
+      return match.test(marker.title)
+        ? marker.setVisible(true)
+        : marker.setVisible(false);
+    });
+  };
+
   render() {
     return (
       <div className="main-container">
         <PlaceList
-          allPlaces={this.state.allPlaces}
+          allPlaces={(this.state.query
+            ? this.state.showingPlaces
+            : this.state.allPlaces
+          ).sort(sortBy("name"))}
           selectPlaceFromList={this.selectPlaceFromList}
+          queryFilter={this.queryFilter}
         />
         <div className="map__container">
           <div ref="map" className="map">

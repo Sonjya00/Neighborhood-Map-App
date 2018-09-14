@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 
 class PlaceList extends Component {
-  state = {};
-
   handleClick(place) {
     this.props.selectPlaceFromList(place);
+  }
+
+  updateQuery(query) {
+    this.props.queryFilter(query.trim());
   }
   render() {
     return (
@@ -13,11 +15,17 @@ class PlaceList extends Component {
         <p className="place-list__description">
           A list of my favorite places in Koreatown Los Angeles
         </p>
+        <input
+          type="text"
+          placeholder="Search for name"
+          className="search-places"
+          onChange={e => this.updateQuery(e.target.value)}
+        />
         <ul className="place-list__list">
           {this.props.allPlaces.map((place, index) => (
             <li
               key={index}
-              id={index}
+              id={place.id}
               className="place-list__item"
               onClick={() => this.handleClick(place)}
             >

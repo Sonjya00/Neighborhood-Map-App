@@ -95,3 +95,12 @@ body {
   background-color: #10637c;
   color: ivory;
 }
+
+.search-places {
+  width: 80%;
+  line-height: 20px;
+  display: block;
+  margin: 20px auto;
+  font-size: 15px;
+  background-color: ivory;
+}
