@@ -8,8 +8,8 @@ const neighborhoodData = {
       name: "Slurpin' Ramen Bar",
       id: 0,
       position: {
-        lat: 34.0574,
-        lng: -118.3067
+        lat: 34.0576,
+        lng: -118.3068
       }
     },
     {
@@ -17,32 +17,32 @@ const neighborhoodData = {
       id: 1,
       // id: "ChIJy7JX7pq4woARaiY9bptRxqs",
       position: {
-        lat: 34.0639,
-        lng: -118.3096
+        lat: 34.063902,
+        lng: -118.309588
       }
     },
     {
       name: "Hae Ha Heng Thai Bistro",
       id: 2,
       position: {
-        lat: 34.0685,
-        lng: -118.3094
+        lat: 34.06848562559947,
+        lng: -118.30943081942303
       }
     },
     {
       name: "Kashira Japanese Restaurant",
       id: 3,
       position: {
-        lat: 34.0622,
-        lng: -118.3086
+        lat: 34.062,
+        lng: -118.3089
       }
     },
     {
       name: "EMC Seafood & Raw Bar",
       id: 4,
       position: {
-        lat: 34.0632,
-        lng: -118.2987
+        lat: 34.0634,
+        lng: -118.2991
       }
     },
     {
@@ -66,7 +66,7 @@ const neighborhoodData = {
       id: 7,
       position: {
         lat: 34.0504,
-        lng: -118.3087
+        lng: -118.3088
       }
     },
     {

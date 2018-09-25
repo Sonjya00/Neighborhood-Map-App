@@ -124,19 +124,119 @@ export default class MapContainer extends Component {
       this.state.infowindow.close();
     }
     infowindow.marker = marker;
-    infowindow.setContent(`<h3>${marker.title}</h3>`);
+
     infowindow.addListener("closeclick", () => {
       // infowindow.marker = null;
       this.setState({
         infowindow: null
       });
     });
+
+    // FETCH REQUEST
+    // constants needed for the fetch request
+    const clientID = "M3R0LNMQQVYUJO4XVCHJZQYA0BGGUEGL203MKA230F05D3UC";
+    const clientSecret = "MZ41VN0DEUT0MJ0ICKAVY1A3RP4QEETSMP2Y024J31KV1ZNW";
+    const lat = 34.0587;
+    const lng = -118.305;
+
+    let placeInfo = null;
+    let photoURL = null;
+
+    ////////// STREETVIEW CODE
+    const { google } = this.props;
+    const streetViewService = new google.maps.StreetViewService();
+    const radius = 50;
+    // In case the panoramic is found and the status is OK,
+    // compute the position of the streetview image, then calculate the heading,
+    //then get a panorama from that and set the options
+    function getStreetView(data, status) {
+      if (status == google.maps.StreetViewStatus.OK) {
+        const nearStreetViewLocation = data.location.latLng;
+        const heading = google.maps.geometry.spherical.computeHeading(
+          nearStreetViewLocation,
+          marker.position
+        );
+        infowindow.setContent(
+          `<div>
+          <h3 class="infowindow-title">${marker.title}</h3>
+          <div id="pano"></div></div>`
+        );
+        const panoramaOptions = {
+          position: nearStreetViewLocation,
+          pov: {
+            heading: heading,
+            pitch: 10
+          }
+        };
+        const panorama = new google.maps.StreetViewPanorama(
+          document.getElementById("pano"),
+          panoramaOptions
+        );
+      } else {
+        infowindow.setContent(
+          `<div> ${marker.title} </div><div>No Street View Found</div>`
+        );
+      }
+    }
+    //use streetview service to get the closest streetview image within
+    // 50 meters of the markers position
+    streetViewService.getPanoramaByLocation(
+      marker.position,
+      radius,
+      getStreetView
+    );
+
+    /////// END OF STREETVIEW CODE
+
+    // // fetch the venue ID
+    // fetch(
+    //   `https://api.foursquare.com/v2/venues/search?ll=${lat},${lng}&v=20180518&query=${
+    //     marker.title
+    //   }&limit=1&client_id=${clientID}&client_secret=${clientSecret}`
+    // )
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     const venueID = data.response.venues[0].id;
+    //     placeInfo = data.response.venues[0];
+    //     // fetch the photo
+    //     fetch(
+    //       `https://api.foursquare.com/v2/venues/${venueID}/photos?v=20180518&client_id=${clientID}&client_secret=${clientSecret}`
+    //     )
+    //       .then(response => response.json())
+    //       .then(data => {
+    //         // if (data.response.photos.items) {
+    //         //   photoURL = data.response.photos.items;
+    //         // }
+    //         // this.setInfowindowContent(infowindow, marker, placeInfo, photoURL);
+    //         console.log(placeInfo);
+    //       });
+    //   })
+    //   // show errors of the first fetch request
+    //   .catch(error => console.log(error));
+
+    // // end of fetch requests
+
+    // OPENING INFOWINDOW
     infowindow.open(this.map, marker);
     this.setState({
       infowindow: infowindow
     });
     // }
   };
+
+  setInfowindowContent(infowindow, marker, placeInfo, photoURL) {
+    // ${
+    //   photoURL[0].width
+    // }x${photoURL[0].height}
+    infowindow.setContent(
+      // `<div><h3>${marker.title}</h3><img src="${photoURL[0].prefix}100x300${
+      //   photoURL[0].suffix
+      // }"></div>`
+      `<div><h3>${marker.title}</h3><p>${placeInfo.categories[0].name}</p>
+      <p>${placeInfo.location.formattedAddress}</p></div>`
+    );
+    console.log(placeInfo);
+  }
 
   selectPlaceFromList = place => {
     const selectedMarker = this.state.allMarkers.find(

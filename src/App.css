@@ -104,3 +104,12 @@ body {
   font-size: 15px;
   background-color: ivory;
 }
+
+.infowindow-title {
+  text-align: center;
+}
+
+#pano {
+  width: 350px;
+  height: 300px;
+}
