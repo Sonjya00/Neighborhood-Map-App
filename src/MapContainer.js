@@ -284,6 +284,13 @@ export default class MapContainer extends Component {
       marker => marker.id === place.id
     );
     this.handleActiveMarker(selectedMarker);
+    // when an item is selected, close the menu if the viewport is small
+    if (window.innerWidth < 550) {
+      this.props.toggleMenu();
+      // this.setState({
+      //   query: ""
+      // });
+    }
   };
 
   queryFilter = query => {
@@ -312,6 +319,9 @@ export default class MapContainer extends Component {
   };
 
   render() {
+    // use the menu status to determine which class to attribute
+    // to PlaceList and to the map
+    const { menuOpen } = this.props;
     return (
       <div className="main-container">
         <PlaceList
@@ -322,8 +332,14 @@ export default class MapContainer extends Component {
           selectPlaceFromList={this.selectPlaceFromList}
           queryFilter={this.queryFilter}
           activeMarker={this.state.activeMarker}
+          classList={
+            menuOpen ? "place-list__container open" : "place-list__container"
+          }
         />
-        <div className="map__container">
+        <div
+          id="map"
+          className={menuOpen ? "map__container drawer-open" : "map__container"}
+        >
           <div ref="map" className="map">
             <p className="loading-msg">Loading map...</p>
           </div>

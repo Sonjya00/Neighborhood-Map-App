@@ -10,10 +10,10 @@ class PlaceList extends Component {
   }
   render() {
     return (
-      <div className="place-list__container">
+      <div id="drawer" className={this.props.classList}>
         <h2 className="place-list__title">Favorite places</h2>
         <p className="place-list__description">
-          A list of my favorite places in Koreatown Los Angeles
+          A list of my favorite places in Koreatown, Los Angeles
         </p>
         <input
           type="text"
