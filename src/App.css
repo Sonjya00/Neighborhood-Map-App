@@ -284,10 +284,16 @@ body {
   border: 1px solid #333;
   color: #333;
   height: 30px;
-  font-weight: bold;
+  font-size: 15px;
+  /* font-weight: bold; */
   padding: 5px;
   position: absolute;
   bottom: 0vh;
   text-align: center;
   width: 100%;
+}
+
+.foursquare-attribution {
+  height: 8px;
+  margin-left: 30px;
 }

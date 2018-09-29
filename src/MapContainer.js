@@ -340,7 +340,7 @@ export default class MapContainer extends Component {
           id="map"
           className={menuOpen ? "map__container drawer-open" : "map__container"}
         >
-          <div ref="map" className="map">
+          <div ref="map" className="map" role="application">
             <p className="loading-msg">Loading map...</p>
           </div>
         </div>

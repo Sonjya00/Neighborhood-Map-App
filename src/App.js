@@ -35,7 +35,14 @@ class App extends Component {
           toggleMenu={this.toggleMenu}
         />
         {/* Footer */}
-        <footer class="footer">2018 © - Coded by Sonia Gorla</footer>
+        <footer className="footer">
+          © 2018 - Sonia Gorla
+          <img
+            alt="Foursquare"
+            className="foursquare-attribution"
+            src={require("./img/powered-by-foursquare-grey.svg")}
+          />
+        </footer>
       </div>
     );
   }

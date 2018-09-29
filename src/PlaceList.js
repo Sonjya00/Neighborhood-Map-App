@@ -20,6 +20,7 @@ class PlaceList extends Component {
           placeholder="Search for name"
           className="search-places"
           onChange={e => this.updateQuery(e.target.value)}
+          aria-label="Search"
         />
         <ul className="place-list__list">
           {this.props.allPlaces.map((place, index) => (
