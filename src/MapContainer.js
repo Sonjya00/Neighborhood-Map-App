@@ -14,7 +14,7 @@ export default class MapContainer extends Component {
   state = {
     neighborhood: neighborhoodData.neighborhoodLoc, // center of the map
     allPlaces: neighborhoodData.allPlaces, // all venues
-    showingPlaces: [], // filtered places based on current query
+    showingPlaces: neighborhoodData.allPlaces, // filtered places based on current query
     allMarkers: [], // all markers for all venues
     activeMarker: null, // currently selected marker
     infowindow: null, // pop up window
@@ -293,6 +293,12 @@ export default class MapContainer extends Component {
     }
   };
 
+  selectLiWithKeyboard = cursor => {
+    const allPlacesSorted = this.state.allPlaces.sort(sortBy("name"));
+    const selectedPlace = allPlacesSorted[cursor];
+    this.selectPlaceFromList(selectedPlace);
+  };
+
   queryFilter = query => {
     // variable to filter places and markers
     const match = new RegExp(escapeRegExp(query), "i");
@@ -323,13 +329,16 @@ export default class MapContainer extends Component {
     // to PlaceList and to the map
     const { menuOpen } = this.props;
     return (
-      <div className="main-container">
+      <main className="main-container">
         <PlaceList
           allPlaces={(this.state.query
             ? this.state.showingPlaces
             : this.state.allPlaces
           ).sort(sortBy("name"))}
+          menuOpen={this.props.menuOpen}
+          showingPlaces={this.state.showingPlaces}
           selectPlaceFromList={this.selectPlaceFromList}
+          selectLiWithKeyboard={this.selectLiWithKeyboard}
           queryFilter={this.queryFilter}
           activeMarker={this.state.activeMarker}
           classList={
@@ -344,7 +353,7 @@ export default class MapContainer extends Component {
             <p className="loading-msg">Loading map...</p>
           </div>
         </div>
-      </div>
+      </main>
     );
   }
 }

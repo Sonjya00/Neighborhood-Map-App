@@ -11,6 +11,13 @@ class App extends Component {
   state = {
     menuOpen: false // modified by the hamburger component
   };
+  // the menu is open or closed from the start depending on the
+  // viewport width
+  componentDidMount() {
+    this.setState({
+      menuOpen: window.innerWidth < 550 ? false : true
+    });
+  }
 
   // open and close the menu, triggered by the hamburger,
   // and clicking a marker, if the menu takes up 100% of the viewport
@@ -35,10 +42,10 @@ class App extends Component {
           toggleMenu={this.toggleMenu}
         />
         {/* Footer */}
-        <footer className="footer">
+        <footer className="footer" role="contentinfo">
           © 2018 - Sonia Gorla
           <img
-            alt="Foursquare"
+            alt="Powered by Foursquare"
             className="foursquare-attribution"
             src={require("./img/powered-by-foursquare-grey.svg")}
           />

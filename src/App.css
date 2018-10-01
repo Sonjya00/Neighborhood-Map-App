@@ -5,17 +5,18 @@
 }
 
 body {
+  background-color: #333;
   height: 100%;
   width: 100%;
-  background-color: #333;
 }
 
 .main-container {
   border: 1px solid #333;
   display: flex;
   flex-wrap: nowrap;
+  position: relative;
   width: 100%;
-  height: 85vh;
+  height: 100%;
 }
 
 /* Header styles */
@@ -54,10 +55,10 @@ body {
 
 #menu svg {
   fill: #333;
+  height: 40px;
   position: absolute;
   top: 5px;
   left: 10px;
-  height: 40px;
 }
 
 #menu svg:hover {
@@ -80,7 +81,7 @@ body {
 
 .map {
   position: absolute;
-  height: 85vh;
+  height: calc(100vh - 94px);
   width: 100%;
 }
 
@@ -88,7 +89,7 @@ body {
   color: ivory;
 }
 
-/* PLACELIST STYLES */
+/* Placelist Styles */
 
 .place-list__container {
   color: white;
@@ -103,15 +104,14 @@ body {
   width: 0;
   overflow: hidden;
 }
-
 .place-list__container.open {
   -webkit-transform: translate(0, 0);
   transform: translate(0, 0);
   width: 100%;
-  height: 85vh;
-  overflow: visible;
+  /* same height as the map */
+  height: calc(100vh - 94px);
+  overflow: scroll;
 }
-
 @media screen and (min-width: 550px) {
   .place-list__container.open {
     width: 90%;
@@ -137,10 +137,10 @@ body {
 }
 
 .place-list__title {
+  font-size: 18px;
   letter-spacing: 2px;
   margin: 20px auto;
   text-align: center;
-  font-size: 18px;
 }
 @media screen and (min-width: 350px) {
   .place-list__title {
@@ -252,8 +252,8 @@ body {
 }
 
 .infowindow-no-sw {
-  position: relative;
   height: 20px;
+  position: relative;
 }
 
 .infowindow-no-sw-msg {
@@ -279,16 +279,18 @@ body {
   height: 150px;
 }
 
+/* Footer Styles */
+
 .footer {
   background-color: lightblue;
   border: 1px solid #333;
   color: #333;
   height: 30px;
   font-size: 15px;
-  /* font-weight: bold; */
+  margin-top: -30px;
   padding: 5px;
-  position: absolute;
-  bottom: 0vh;
+  position: fixed;
+  bottom: 0;
   text-align: center;
   width: 100%;
 }
