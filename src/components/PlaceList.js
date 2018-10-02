@@ -5,7 +5,8 @@ class PlaceList extends Component {
     cursor: null
   };
 
-  // if the user clicks on a list item with the mouse
+  // call the function to select the list item
+  // if the user clicks on it with the mouse
   handleClick(place, index) {
     this.setState({
       cursor: index
@@ -19,6 +20,9 @@ class PlaceList extends Component {
     setTimeout(() => {
       const { cursor } = this.state;
       if (cursor === null) {
+        // set time out to prevent the focus function to run before the click function,
+        // causing both the element selected with the mouse and by the focus
+        // to animate temporarily
         this.setState({
           cursor: 0
         });
@@ -46,17 +50,37 @@ class PlaceList extends Component {
       }));
       this.props.selectLiWithKeyboard(cursor + 1);
     }
+    console.log(cursor);
   };
 
   updateQuery(query) {
     this.props.queryFilter(query.trim());
   }
 
+  // function that checks which key has been pressed
+  // while the clear query icon is selected
+  handleKeyDownOnClear = e => {
+    // if the key pressed is either enter or the space bar
+    if (e.keyCode === 13 || e.keyCode === 32) {
+      e.preventDefault();
+      this.props.clearQuery();
+    }
+  };
+
   render() {
+    const {
+      classList,
+      neighborhoodName,
+      cityName,
+      menuOpen,
+      query,
+      activeMarker,
+      allPlaces
+    } = this.props;
     return (
       <nav
         id="drawer"
-        className={this.props.classList}
+        className={classList}
         role="complementary"
         aria-labelledby="listboxTitle"
       >
@@ -64,44 +88,58 @@ class PlaceList extends Component {
           Favorite places
         </h2>
         <p className="place-list__description">
-          A list of my favorite places in Koreatown, Los Angeles.
+          A list of my favorite places in {neighborhoodName}, {cityName}.
         </p>
-        <input
-          type="text"
-          placeholder="Search for name"
-          className="search-places"
-          onChange={e => this.updateQuery(e.target.value)}
-          aria-label="Search"
-          tabIndex={this.props.menuOpen ? "0" : "-1"}
-        />
+        <div className="input__container">
+          <input
+            type="text"
+            placeholder="Search for name"
+            className="search-places"
+            onChange={e => this.updateQuery(e.target.value)}
+            aria-label="Search"
+            tabIndex={menuOpen ? "0" : "-1"}
+            value={query}
+          />
+          <a
+            id="clearQuery"
+            role="button"
+            aria-label="Clear Searchbox"
+            onClick={() => this.props.clearQuery()}
+            onKeyDown={this.handleKeyDownOnClear}
+          >
+            <svg
+              tabIndex="0"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+          </a>
+        </div>
         <ul
           className="place-list__list"
           role="listbox"
           aria-label="Places list"
-          aria-activedescendant={
-            this.props.activeMarker ? this.props.activeMarker.id : "none"
-          }
-          tabIndex={this.props.menuOpen ? "0" : "-1"}
+          aria-activedescendant={activeMarker ? activeMarker.id : "none"}
+          tabIndex={menuOpen ? "0" : "-1"}
           onKeyDown={this.handleKeyDown}
           onFocus={this.handleFocus}
         >
-          {this.props.allPlaces.map((place, index) => (
+          {allPlaces.map((place, index) => (
             <li
               key={index}
               id={place.id}
               className={
-                this.props.activeMarker &&
-                this.props.activeMarker.id === place.id
+                activeMarker && activeMarker.id === place.id
                   ? "place-list__item selected-li"
                   : "place-list__item"
               }
               onClick={() => this.handleClick(place, index)}
               role="option"
               aria-selected={
-                this.props.activeMarker &&
-                this.props.activeMarker.id === place.id
-                  ? true
-                  : false
+                activeMarker && activeMarker.id === place.id ? true : false
               }
             >
               {place.name}

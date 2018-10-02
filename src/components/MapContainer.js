@@ -169,6 +169,7 @@ export default class MapContainer extends Component {
     let placeAddress = null;
     let placeCategory = null;
     let placeLikes = null;
+    let panoContent = "";
 
     // fetch the venue ID, store the info of the place in a variable
     fetch(
@@ -176,7 +177,13 @@ export default class MapContainer extends Component {
         marker.title
       }&limit=1&client_id=${clientID}&client_secret=${clientSecret}`
     )
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          Promise.reject("Error when getting venue details");
+        }
+      })
       .then(data => {
         const venueID = data.response.venues[0].id;
         const placeInfo = data.response.venues[0];
@@ -190,7 +197,13 @@ export default class MapContainer extends Component {
         fetch(
           `https://api.foursquare.com/v2/venues/${venueID}/likes?v=20180518&client_id=${clientID}&client_secret=${clientSecret}`
         )
-          .then(response => response.json())
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              Promise.reject("Error when getting venue details");
+            }
+          })
           .then(data => {
             placeLikes = data.response.likes.count;
           })
@@ -209,19 +222,17 @@ export default class MapContainer extends Component {
                   nearStreetViewLocation,
                   marker.position
                 );
+                panoContent = `<div class="infowindow-sw-img">
+                <div class="infowindow-likes infowindow-likes-sw">${placeLikes} likes</div><div id="pano" class="infowindow-pano"></div></div>`;
                 infowindow.setContent(
                   `<div class="infowindow-heading">
-                      <h3 class="infowindow-title">${placeName ||
-                        marker.title}</h3>
+                      <h3 class="infowindow-title">${placeName}</h3>
                     </div>
                     <div class="infowindow-content">
                       <img alt="${placeCategory}" class="infowindow-icon" src="${placeIcon}">
                       <p class="infowindow-category">${placeCategory}</p>
                       <div class="infowindow-address"><p>${placeAddress}</p></div>
-                      <div class="infowindow-sw-img">
-                        <div class="infowindow-likes">${placeLikes} likes</div>
-                        <div id="pano" class="infowindow-pano"></div>
-                      </div>
+                      ${panoContent}
                     </div>`
                 );
                 const panoramaOptions = {
@@ -239,17 +250,16 @@ export default class MapContainer extends Component {
                   panoramaOptions
                 );
               } else {
+                panoContent = `<div class="infowindow-no-sw"><p class="infowindow-likes">${placeLikes} likes</p><p class="infowindow-no-sw-msg">No Street View Found</p></div>`;
                 infowindow.setContent(
                   `<div class="infowindow-heading">
-                      <h3 class="infowindow-title">${placeName ||
-                        marker.title}</h3>
+                      <h3 class="infowindow-title">${placeName}</h3>
                     </div>
                     <div class="infowindow-content">
                       <img alt="${placeCategory}" class="infowindow-icon" src="${placeIcon}">
                       <p class="infowindow-category">${placeCategory}</p>
-                      <div class="infowindow-address"><p>${placeAddress}</p></div>
-                      <div class="infowindow-no-sw"><p class="infowindow-likes">${placeLikes} likes</p>
-                      <p class="infowindow-no-sw-msg">No Street View Found</p></div>
+                      <div class="infowindow-address"><p>${placeAddress}</p></div>  
+                    ${panoContent}
                     </div>`
                 );
               }
@@ -271,9 +281,11 @@ export default class MapContainer extends Component {
         infowindow.setContent(
           `<div class="infowindow-heading"><h3 class="infowindow-title">${
             marker.title
-          }</h3></div><div class="infowindow-content">Data currently not available</div>`
+          }</h3></div><div class="infowindow-no-fsq-msg">Data currently not available</div>`
         );
-        console.log(error);
+        console.log(
+          `There could be a problem with your internet connection (${error})`
+        );
       });
     // end of fetch requests
   };
@@ -324,23 +336,32 @@ export default class MapContainer extends Component {
     this.handleActiveMarker(null);
   };
 
+  clearQuery = query => {
+    this.setState({
+      query: ""
+    });
+  };
+
   render() {
     // use the menu status to determine which class to attribute
     // to PlaceList and to the map
     const { menuOpen } = this.props;
+    const { query, showingPlaces, allPlaces, activeMarker } = this.state;
+    const { neighborhood, city } = neighborhoodData.names;
     return (
       <main className="main-container">
         <PlaceList
-          allPlaces={(this.state.query
-            ? this.state.showingPlaces
-            : this.state.allPlaces
-          ).sort(sortBy("name"))}
-          menuOpen={this.props.menuOpen}
-          showingPlaces={this.state.showingPlaces}
+          neighborhoodName={neighborhood}
+          cityName={city}
+          allPlaces={(query ? showingPlaces : allPlaces).sort(sortBy("name"))}
+          menuOpen={menuOpen}
+          showingPlaces={showingPlaces}
+          activeMarker={activeMarker}
           selectPlaceFromList={this.selectPlaceFromList}
           selectLiWithKeyboard={this.selectLiWithKeyboard}
+          query={query}
           queryFilter={this.queryFilter}
-          activeMarker={this.state.activeMarker}
+          clearQuery={this.clearQuery}
           classList={
             menuOpen ? "place-list__container open" : "place-list__container"
           }

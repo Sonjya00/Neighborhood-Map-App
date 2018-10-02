@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./App.css";
 
 class Hamburger extends Component {
   // function that checks which key has been pressed
@@ -23,9 +22,11 @@ class Hamburger extends Component {
         <svg
           tabIndex="0"
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
+          width="54"
+          height="54"
+          viewBox="0 0 18 18"
         >
-          <path d="M2 6h20v3H2zm0 5h20v3H2zm0 5h20v3H2z" />
+          <path d="M2 13.5h14V12H2v1.5zm0-4h14V8H2v1.5zM2 4v1.5h14V4H2z" />
         </svg>
       </a>
     );

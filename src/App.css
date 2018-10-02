@@ -6,6 +6,7 @@
 
 body {
   background-color: #333;
+  color: ivory;
   height: 100%;
   width: 100%;
 }
@@ -57,7 +58,7 @@ body {
   fill: #333;
   height: 40px;
   position: absolute;
-  top: 5px;
+  top: 10px;
   left: 10px;
 }
 
@@ -87,6 +88,20 @@ body {
 
 .loading-msg {
   color: ivory;
+}
+
+/* Searchbar styles */
+
+.input__container {
+  position: relative;
+}
+
+#clearQuery svg {
+  cursor: pointer;
+  fill: #333;
+  position: absolute;
+  top: 0;
+  right: 35px;
 }
 
 /* Placelist Styles */
@@ -220,7 +235,7 @@ body {
   background-color: #333;
   color: ivory;
   padding: 5px;
-  letter-spacing: 1.5px;
+  /* letter-spacing: 1px; */
   text-align: center;
 }
 
@@ -230,6 +245,7 @@ body {
 
 .infowindow-content {
   margin-top: 10px;
+  color: #333;
 }
 
 .infowindow-icon {
@@ -252,13 +268,15 @@ body {
 }
 
 .infowindow-no-sw {
-  height: 20px;
+  height: 50px;
   position: relative;
 }
 
+.infowindow-no-fsq-msg,
 .infowindow-no-sw-msg {
   color: #555;
   font-style: italic;
+  margin-top: 10px;
   text-align: center;
 }
 
@@ -266,16 +284,19 @@ body {
   background-color: #10637c;
   color: ivory;
   padding: 2px;
+  text-align: center;
+  width: 70px;
+}
+
+.infowindow-likes-sw {
   position: absolute;
   top: 0;
   right: 0;
-  text-align: center;
-  width: 70px;
   z-index: 100;
 }
 
 .infowindow-pano {
-  width: 200px;
+  width: 220px;
   height: 150px;
 }
 
@@ -298,4 +319,11 @@ body {
 .foursquare-attribution {
   height: 8px;
   margin-left: 30px;
+}
+
+.error-msg {
+  background-color: #10637c;
+  color: ivory;
+  padding: 5px;
+  margin-bottom: 5px;
 }

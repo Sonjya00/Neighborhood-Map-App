@@ -1,16 +1,35 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper } from "google-maps-react";
 import "./App.css";
-import MapContainer from "./MapContainer.js";
-import Hamburger from "./Hamburger.js";
+import MapContainer from "./components/MapContainer.js";
+import Hamburger from "./components/Hamburger.js";
 
 // import Google Maps API key from environment variable
 const GM_API_KEY = `${process.env.REACT_APP_GM_API_KEY}`;
+
+// Add event listener to check if there's an error while loading the Google Maps API script
+document.addEventListener("DOMContentLoaded", () => {
+  const root = document.getElementById("root");
+  // Get the script that loads Google Maps API
+  const scriptTag = document.getElementsByTagName("SCRIPT").item(1);
+  // In case there is an error, the "Loading..." message is deleted,
+  // and instead, an error message is displayed both in the dom and in the console
+  scriptTag.onerror = () => {
+    console.log(
+      `Something went wrong. This page didn't load Google Maps API correctly.`
+    );
+    root.removeChild(root.childNodes[0]);
+    const errorMsg = document.createElement("div");
+    errorMsg.innerHTML = `<div class="error-msg">Something went wrong. This page didn't load Google Maps API correctly.</div>`;
+    root.appendChild(errorMsg);
+  };
+});
 
 class App extends Component {
   state = {
     menuOpen: false // modified by the hamburger component
   };
+
   // the menu is open or closed from the start depending on the
   // viewport width
   componentDidMount() {

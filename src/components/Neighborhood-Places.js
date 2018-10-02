@@ -1,4 +1,8 @@
 const neighborhoodData = {
+  names: {
+    neighborhood: "Koreatown",
+    city: "Los Angeles"
+  },
   neighborhoodLoc: {
     lat: 34.0587,
     lng: -118.305
