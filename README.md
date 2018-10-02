@@ -34,3 +34,4 @@ Build a single page map application using React and the Google Maps API. Integra
 - [sort-by](https://www.npmjs.com/package/sort-by)
 - [Foursquare](https://developer.foursquare.com/)
 - Icons: [https://www.materialui.co/](https://www.materialui.co/)
+- Map style: [Snazzy Maps](https://snazzymaps.com/style/44/map)

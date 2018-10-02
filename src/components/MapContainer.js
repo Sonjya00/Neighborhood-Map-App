@@ -5,6 +5,7 @@ import sortBy from "sort-by";
 
 import PlaceList from "./PlaceList.js";
 import neighborhoodData from "./Neighborhood-Places.js";
+import mapStyle from "./MapStyle.js";
 
 // import Foursquare keys from environment variables
 const FSQ_CLIENTID = `${process.env.REACT_APP_FSQ_CLIENTID}`;
@@ -19,7 +20,7 @@ export default class MapContainer extends Component {
     activeMarker: null, // currently selected marker
     infowindow: null, // pop up window
     googleInfowindow: new this.props.google.maps.InfoWindow(),
-    query: "" // query from the search bar
+    query: "" // query from the search bars
   };
 
   // As soon as the component is mounted, load the map
@@ -34,15 +35,20 @@ export default class MapContainer extends Component {
       const maps = google.maps;
       const mapRef = this.refs.map;
       const node = ReactDOM.findDOMNode(mapRef);
-      const mapConfig = Object.assign(
-        {},
-        {
-          center: this.state.neighborhood,
-          zoom: 15,
-          mapTypeId: "roadmap"
-        }
-      );
-      this.map = new maps.Map(node, mapConfig);
+      // const mapConfig = Object.assign(
+      //   {},
+      //   {
+      //     center: this.state.neighborhood,
+      //     zoom: 15,
+      //     mapTypeId: "roadmap",
+      //   }
+      // );
+      this.map = new maps.Map(node, {
+        center: this.state.neighborhood,
+        zoom: 15,
+        styles: mapStyle,
+        mapTypeId: "roadmap"
+      });
       this.makeMarkers();
     }
   }
