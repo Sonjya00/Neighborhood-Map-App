@@ -31,7 +31,7 @@ class PlaceList extends Component {
     }, 200);
   };
 
-  // moves the cursor up and down according to the arrow keys pressed
+  // move the cursor up and down according to the arrow keys pressed
   handleKeyDown = e => {
     const { cursor } = this.state;
     if (e.keyCode === 38 && cursor > 0) {
@@ -50,20 +50,34 @@ class PlaceList extends Component {
       }));
       this.props.selectLiWithKeyboard(cursor + 1);
     }
-    console.log(cursor);
   };
 
+  // update the query based on the value of the input
   updateQuery(query) {
+    this.setState({
+      cursor: null
+    });
     this.props.queryFilter(query.trim());
   }
 
+  // called onclick or after handleKeyDownOnClear() onkeydown.
+  // reset the cursor, and call another function on Mapcontainer
+  // to clear the query
+  handleClearQuery = () => {
+    this.setState({
+      cursor: null
+    });
+    this.props.clearQuery();
+  };
+
   // function that checks which key has been pressed
-  // while the clear query icon is selected
+  // while the clear query icon is selected.
+  // if it's enter or space, it will call handleClearQuery to clear the query
   handleKeyDownOnClear = e => {
     // if the key pressed is either enter or the space bar
     if (e.keyCode === 13 || e.keyCode === 32) {
       e.preventDefault();
-      this.props.clearQuery();
+      this.handleClearQuery();
     }
   };
 
@@ -104,7 +118,7 @@ class PlaceList extends Component {
             id="clearQuery"
             role="button"
             aria-label="Clear Searchbox"
-            onClick={() => this.props.clearQuery()}
+            onClick={this.handleClearQuery}
             onKeyDown={this.handleKeyDownOnClear}
           >
             <svg

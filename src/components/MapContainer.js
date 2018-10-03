@@ -132,7 +132,6 @@ export default class MapContainer extends Component {
 
   // INFOWINDOW FUNCTION
   populateInfoWindow = marker => {
-    const { google } = this.props;
     // storing the infowindow in the state beforehand allows to open it
     // for the first time even with no internet
     const infowindow = this.state.googleInfowindow;
@@ -312,8 +311,8 @@ export default class MapContainer extends Component {
   };
 
   selectLiWithKeyboard = cursor => {
-    const allPlacesSorted = this.state.allPlaces.sort(sortBy("name"));
-    const selectedPlace = allPlacesSorted[cursor];
+    const showingPlacesSorted = this.state.showingPlaces.sort(sortBy("name"));
+    const selectedPlace = showingPlacesSorted[cursor];
     this.selectPlaceFromList(selectedPlace);
   };
 
@@ -342,9 +341,21 @@ export default class MapContainer extends Component {
     this.handleActiveMarker(null);
   };
 
-  clearQuery = query => {
+  clearQuery = () => {
+    // close any open infowindow
+    if (this.state.infowindow) {
+      this.state.infowindow.close();
+    }
+    // make all the markers reappear on the map
+    this.state.allMarkers.forEach(marker => marker.setVisible(true));
+    this.handleActiveMarker(null);
+    // reset query and any selected marker/open infowindow.
+    // set the showing places to all places
     this.setState({
-      query: ""
+      activeMarker: null,
+      infowindow: null,
+      query: "",
+      showingPlaces: this.state.allPlaces
     });
   };
 
