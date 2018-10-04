@@ -2,10 +2,10 @@ import React, { Component } from "react";
 
 class PlaceList extends Component {
   state = {
-    cursor: null
+    cursor: null // used to keep track of the selected list item, esp for onkeydown func
   };
 
-  // call the function to select the list item
+  // Call the function to select the list item
   // if the user clicks on it with the mouse
   handleClick(place, index) {
     this.setState({
@@ -14,15 +14,15 @@ class PlaceList extends Component {
     this.props.selectPlaceFromList(place);
   }
 
-  // if the user shifts the focus on the listbox, and there isn't a selected item,
+  // If the user shifts the focus on the listbox, and there isn't a selected item,
   // the first item of the list is automatically selected
   handleFocus = e => {
     setTimeout(() => {
       const { cursor } = this.state;
       if (cursor === null) {
         // set time out to prevent the focus function to run before the click function,
-        // causing both the element selected with the mouse and by the focus
-        // to animate temporarily
+        // causing both the element selected with the mouse and the first element automatically
+        // selected by the focus, to animate at the same time.
         this.setState({
           cursor: 0
         });
@@ -31,7 +31,8 @@ class PlaceList extends Component {
     }, 200);
   };
 
-  // move the cursor up and down according to the arrow keys pressed
+  // Move the cursor up and down according to the arrow keys pressed,
+  // then call function to select that list item
   handleKeyDown = e => {
     const { cursor } = this.state;
     if (e.keyCode === 38 && cursor > 0) {
@@ -52,7 +53,8 @@ class PlaceList extends Component {
     }
   };
 
-  // update the query based on the value of the input
+  // Update the query based on the value of the input
+  // and reset the cursor value so that no list item/marker are selected
   updateQuery(query) {
     this.setState({
       cursor: null
@@ -60,9 +62,8 @@ class PlaceList extends Component {
     this.props.queryFilter(query.trim());
   }
 
-  // called onclick or after handleKeyDownOnClear() onkeydown.
-  // reset the cursor, and call another function on Mapcontainer
-  // to clear the query
+  // Called by onclick or by onkeydown after handleKeyDownOnClear().
+  // Reset the cursor and call another function to clear the query
   handleClearQuery = () => {
     this.setState({
       cursor: null
@@ -70,9 +71,8 @@ class PlaceList extends Component {
     this.props.clearQuery();
   };
 
-  // function that checks which key has been pressed
-  // while the clear query icon is selected.
-  // if it's enter or space, it will call handleClearQuery to clear the query
+  // Check which key has been pressed while the clear query icon is focused.
+  // if it's enter or space, call function to handle the clearing of the query
   handleKeyDownOnClear = e => {
     // if the key pressed is either enter or the space bar
     if (e.keyCode === 13 || e.keyCode === 32) {
@@ -107,12 +107,13 @@ class PlaceList extends Component {
         <div className="input__container">
           <input
             type="text"
-            placeholder="Search for name"
             className="search-places"
-            onChange={e => this.updateQuery(e.target.value)}
+            placeholder="Search for name"
             aria-label="Search"
+            // The input can be focused only if the menu is open
             tabIndex={menuOpen ? "0" : "-1"}
             value={query}
+            onChange={e => this.updateQuery(e.target.value)}
           />
           <a
             id="clearQuery"
@@ -122,7 +123,7 @@ class PlaceList extends Component {
             onKeyDown={this.handleKeyDownOnClear}
           >
             <svg
-              tabIndex="0"
+              tabIndex={menuOpen ? "0" : "-1"}
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -150,11 +151,11 @@ class PlaceList extends Component {
                   ? "place-list__item selected-li"
                   : "place-list__item"
               }
-              onClick={() => this.handleClick(place, index)}
               role="option"
               aria-selected={
                 activeMarker && activeMarker.id === place.id ? true : false
               }
+              onClick={() => this.handleClick(place, index)}
             >
               {place.name}
             </li>

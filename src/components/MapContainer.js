@@ -7,7 +7,7 @@ import PlaceList from "./PlaceList.js";
 import neighborhoodData from "./Neighborhood-Places.js";
 import mapStyle from "./MapStyle.js";
 
-// import Foursquare keys from environment variables
+// Import Foursquare keys from environment variables
 const FSQ_CLIENTID = `${process.env.REACT_APP_FSQ_CLIENTID}`;
 const FSQ_CLIENTSECRET = `${process.env.REACT_APP_FSQ_CLIENTSECRET}`;
 
@@ -35,14 +35,6 @@ export default class MapContainer extends Component {
       const maps = google.maps;
       const mapRef = this.refs.map;
       const node = ReactDOM.findDOMNode(mapRef);
-      // const mapConfig = Object.assign(
-      //   {},
-      //   {
-      //     center: this.state.neighborhood,
-      //     zoom: 15,
-      //     mapTypeId: "roadmap",
-      //   }
-      // );
       this.map = new maps.Map(node, {
         center: this.state.neighborhood,
         zoom: 15,
@@ -85,18 +77,21 @@ export default class MapContainer extends Component {
     this.map.fitBounds(bounds);
   };
 
+  // Function used to clear the currently active marker and to set a new one.
+  // Can also be used to set activeMarker to null if called passing "null" as argument,
+  // in which case only the first part of the function runs
   handleActiveMarker = marker => {
     const { google } = this.props;
     const defaultIcon = this.makeMarkerIcon("AED8E5");
     const activeIcon = this.makeMarkerIcon("10637c");
-    // set to default icon previously selected marker, if any.
+    // Set to default icon previously selected marker, if any.
     if (
       this.state.activeMarker !== null &&
       this.state.activeMarker !== marker
     ) {
       this.state.activeMarker.setIcon(defaultIcon);
     }
-    // if a valid marker is passed, set it to activeMarker
+    // If a valid marker is passed, set it to activeMarker
     if (marker && marker !== this.state.activeMarker) {
       marker.setIcon(activeIcon);
       marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -115,6 +110,7 @@ export default class MapContainer extends Component {
     }
   };
 
+  // Function to make custon marker icons (2 types used for default and active)
   makeMarkerIcon = markerColor => {
     const { google } = this.props;
     const markerImage = new google.maps.MarkerImage(
@@ -132,14 +128,14 @@ export default class MapContainer extends Component {
 
   // INFOWINDOW FUNCTION
   populateInfoWindow = marker => {
-    // storing the infowindow in the state beforehand allows to open it
+    // Storing the infowindow in the state beforehand allows to open it
     // for the first time even with no internet
     const infowindow = this.state.googleInfowindow;
-    // if there's an open infowindow in the state, close it.
+    // If there's an open infowindow in the state, close it.
     if (this.state.infowindow !== null) {
       this.state.infowindow.close();
     }
-    // add the listener to close the infowindow and reset the active marker
+    // Add a listener to close the infowindow and reset the active marker
     infowindow.marker = marker;
     infowindow.addListener("closeclick", () => {
       const defaultIcon = this.makeMarkerIcon("AED8E5");
@@ -149,15 +145,15 @@ export default class MapContainer extends Component {
         activeMarker: null
       });
     });
-    // store the current infowindow in the state
+    // Store the current infowindow in the state
     this.setState({
       infowindow: infowindow
     });
-    // set temporary content for the infowindow while the data is loading
+    // Set temporary content for the infowindow while the data is loading
     infowindow.setContent(`<div>Loading data...</div>`);
-    // fetch the data
+    // Fetch the data
     this.fetchData(marker, infowindow);
-    // open the infowindow
+    // Open the infowindow
     infowindow.open(this.map, marker);
   };
 
@@ -168,7 +164,7 @@ export default class MapContainer extends Component {
     const lat = neighborhoodData.neighborhoodLoc.lat;
     const lng = neighborhoodData.neighborhoodLoc.lng;
 
-    // data that will be fetched, to be used for the infowindow template
+    // Data that will be fetched, to be used for the infowindow template
     let placeName = null;
     let placeIcon = null;
     let placeAddress = null;
@@ -176,12 +172,13 @@ export default class MapContainer extends Component {
     let placeLikes = null;
     let panoContent = "";
 
-    // fetch the venue ID, store the info of the place in a variable
+    // Fetch the venue ID, store the info of the place in a variable
     fetch(
       `https://api.foursquare.com/v2/venues/search?ll=${lat},${lng}&v=20180518&query=${
         marker.title
       }&limit=1&client_id=${clientID}&client_secret=${clientSecret}`
     )
+      // Handle the response
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -189,6 +186,7 @@ export default class MapContainer extends Component {
           Promise.reject("Error when getting venue details");
         }
       })
+      // Set all the variables previously defined that will be needed in the infowindow template
       .then(data => {
         const venueID = data.response.venues[0].id;
         const placeInfo = data.response.venues[0];
@@ -198,10 +196,11 @@ export default class MapContainer extends Component {
         }`;
         placeAddress = placeInfo.location.formattedAddress.join("</p><p>");
         placeCategory = placeInfo.categories[0].name;
-        //fetch the likes and store them in a variable
+        // Fetch the likes and store them in a variable
         fetch(
           `https://api.foursquare.com/v2/venues/${venueID}/likes?v=20180518&client_id=${clientID}&client_secret=${clientSecret}`
         )
+          // Handle the response
           .then(response => {
             if (response.ok) {
               return response.json();
@@ -212,14 +211,14 @@ export default class MapContainer extends Component {
           .then(data => {
             placeLikes = data.response.likes.count;
           })
-          // get streetview and set the infowindow content
+          // Get streetview and set the infowindow content
           .then(() => {
             const { google } = this.props;
             const streetViewService = new google.maps.StreetViewService();
             const radius = 50;
             // In case the panoramic is found and the status is OK,
             // compute the position of the streetview image, then calculate the heading,
-            //then get a panorama from that and set the options
+            // then get a panorama from that and set the options
             function getStreetView(data, status) {
               if (status === google.maps.StreetViewStatus.OK) {
                 const nearStreetViewLocation = data.location.latLng;
@@ -227,6 +226,7 @@ export default class MapContainer extends Component {
                   nearStreetViewLocation,
                   marker.position
                 );
+                // Set the panorama content with the data from Foursquare and the streetview as img
                 panoContent = `<div class="infowindow-sw-img">
                 <div class="infowindow-likes infowindow-likes-sw">${placeLikes} likes</div><div id="pano" class="infowindow-pano"></div></div>`;
                 infowindow.setContent(
@@ -255,6 +255,8 @@ export default class MapContainer extends Component {
                   panoramaOptions
                 );
               } else {
+                // If there's no streetview available, show the rest of the info and a
+                // "Streetview not available" message
                 panoContent = `<div class="infowindow-no-sw"><p class="infowindow-likes">${placeLikes} likes</p><p class="infowindow-no-sw-msg">No Street View Found</p></div>`;
                 infowindow.setContent(
                   `<div class="infowindow-heading">
@@ -269,7 +271,7 @@ export default class MapContainer extends Component {
                 );
               }
             }
-            //use streetview service to get the closest streetview image within
+            // Use streetview service to get the closest streetview image within
             // 50 meters of the markers position
             streetViewService.getPanoramaByLocation(
               marker.position,
@@ -282,6 +284,8 @@ export default class MapContainer extends Component {
           });
         // end of Streetview codes
       })
+      // Handle error from fetch request to display an infowindow
+      // with the place title and an error msg only
       .catch(error => {
         infowindow.setContent(
           `<div class="infowindow-heading"><h3 class="infowindow-title">${
@@ -296,33 +300,41 @@ export default class MapContainer extends Component {
   };
 
   // PLACELIST FUNCTIONS
+
+  // Search for the marker related to the list item, then call function
+  // to set that marker as active
   selectPlaceFromList = place => {
     const selectedMarker = this.state.allMarkers.find(
       marker => marker.id === place.id
     );
     this.handleActiveMarker(selectedMarker);
-    // when an item is selected, close the menu if the viewport is small
+    // When an item is selected, close the menu if the viewport is small
+    // and the menu is taking up 100% of its width
     if (window.innerWidth < 550) {
       this.props.toggleMenu();
-      // this.setState({
-      //   query: ""
-      // });
     }
   };
 
+  // In case a place was selected through the listbox with the arrowkeys,
+  // get all the places, sort them and get the selected place by its index
+  // (which matches the cursor), then call another function to handle the selection
+  // from the listbox
   selectLiWithKeyboard = cursor => {
     const showingPlacesSorted = this.state.showingPlaces.sort(sortBy("name"));
     const selectedPlace = showingPlacesSorted[cursor];
     this.selectPlaceFromList(selectedPlace);
   };
 
+  // Filter the places/marker based on the input in the searchbar
   queryFilter = query => {
-    // variable to filter places and markers
-    const match = new RegExp(escapeRegExp(query), "i");
-    // close the infowindow if there is one open
+    // Close the infowindow if there is one open
     if (this.state.infowindow) {
       this.state.infowindow.close();
     }
+    // Variable to filter places and markers
+    const match = new RegExp(escapeRegExp(query), "i");
+    // Deselect any currently active marker/infowindow, set the query value,
+    // and change showingPlaces
     this.setState({
       activeMarker: null,
       infowindow: null,
@@ -332,25 +344,27 @@ export default class MapContainer extends Component {
         match.test(place.name)
       )
     });
-    // filter the markers and show/hide them
+    // Filter the markers and show/hide them
     this.state.allMarkers.forEach(marker => {
       return match.test(marker.title)
         ? marker.setVisible(true)
         : marker.setVisible(false);
     });
+    // By passing "null" into this function,
+    // the currently selected marker will go back to the default icon
     this.handleActiveMarker(null);
   };
 
   clearQuery = () => {
-    // close any open infowindow
+    // Close any open infowindow
     if (this.state.infowindow) {
       this.state.infowindow.close();
     }
-    // make all the markers reappear on the map
+    // Make all the markers reappear on the map
     this.state.allMarkers.forEach(marker => marker.setVisible(true));
     this.handleActiveMarker(null);
-    // reset query and any selected marker/open infowindow.
-    // set the showing places to all places
+    // Reset query and any active marker/infowindow.
+    // Set the showing places to all places
     this.setState({
       activeMarker: null,
       infowindow: null,

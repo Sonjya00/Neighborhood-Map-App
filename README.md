@@ -24,7 +24,19 @@ Build a single page map application using React and the Google Maps API. Integra
 
 ## Project overview
 
-*To be added*
+This app consists in a neighborhood map that uses the Google Maps APIs. The map displays 10 venues listed inside of a side menu in alphabetical order. The corresponding markers are placed in the map upon loading the app. 
+
+The venues can be selected from the map, by clicking on the markers, or from the listbox. It is possible to search for venues by typing a query on the searchbar in the side menu. This will filter the places by their name, and the filtering will be displayed in both the list and the map. The "x" button on the search bar will clear the input, deselect any active place/marker, and show again all the places/markers.
+
+Once a venue is selected by either clicking on a list item in the listbox, or on a marker in the map, the selection is displayed in the list, the marker animates, and an infowindow opens above it displaying some information about the venue fetched with the Foursquare API (name, address, category, and icon), and the streetview of it.
+
+The app is fully responsive and accessible. All the features can be used with either the mouse or the keyboard.
+
+### Desktop
+![Desktop](screenshots/Desktop.jpg)
+
+### Mobile
+![Mobile Map](screenshots/Mobile_Map.jpg) ![Mobile Sidemenu](screenshots/Mobile_Sidemenu.jpg)
 
 ## Dependencies:
 
