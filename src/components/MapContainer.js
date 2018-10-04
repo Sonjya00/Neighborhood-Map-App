@@ -4,7 +4,7 @@ import escapeRegExp from "escape-string-regexp";
 import sortBy from "sort-by";
 
 import PlaceList from "./PlaceList.js";
-import neighborhoodData from "./Neighborhood-Places.js";
+import neighborhoodData from "./NeighborhoodData.js";
 import mapStyle from "./MapStyle.js";
 
 // Import Foursquare keys from environment variables
@@ -99,13 +99,6 @@ export default class MapContainer extends Component {
       this.setState({
         activeMarker: marker
       });
-      // this.map.setCenter(
-      //   //   {
-      //   //   lat: marker.position.lat() + 0.009,
-      //   //   lng: marker.position.lng()
-      //   // }
-      //   marker.getPosition()
-      // );
       this.populateInfoWindow(marker);
     }
   };
@@ -115,9 +108,6 @@ export default class MapContainer extends Component {
     const { google } = this.props;
     const markerImage = new google.maps.MarkerImage(
       `http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|${markerColor}|40|_|%E2%80%A2`,
-      // new this.props.google.maps.Size(21, 34),
-      // new this.props.google.maps.Point(0, 0),
-      // new this.props.google.maps.Point(10, 34),
       null,
       null,
       null,

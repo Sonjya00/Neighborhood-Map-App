@@ -137,7 +137,7 @@ class PlaceList extends Component {
           className="place-list__list"
           role="listbox"
           aria-label="Places list"
-          aria-activedescendant={activeMarker ? activeMarker.id : "none"}
+          aria-activedescendant={activeMarker ? activeMarker.id : null}
           tabIndex={menuOpen ? "0" : "-1"}
           onKeyDown={this.handleKeyDown}
           onFocus={this.handleFocus}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class Hamburger extends Component {
+class HamburgerButton extends Component {
   // function that checks which key has been pressed
   // while the hamburger menu icon is selected
   handleKeyDown = e => {
@@ -33,4 +33,4 @@ class Hamburger extends Component {
   }
 }
 
-export default Hamburger;
+export default HamburgerButton;

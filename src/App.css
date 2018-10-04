@@ -1,12 +1,12 @@
 * {
-  margin: 0;
   box-sizing: border-box;
   font-family: "Raleway", sans-serif;
+  margin: 0;
 }
 
 body {
   background-color: #333;
-  color: ivory;
+  color: #fffff0;
   height: 100%;
   width: 100%;
 }
@@ -20,10 +20,17 @@ body {
   height: 100%;
 }
 
+.error-msg {
+  background-color: #10637c;
+  color: #fffff0;
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
 /* Header styles */
 
 .main-header {
-  background-color: lightblue;
+  background-color: #add8e6;
   color: #333;
   padding: 15px;
   text-align: center;
@@ -87,13 +94,22 @@ body {
 }
 
 .loading-msg {
-  color: ivory;
+  color: #fffff0;
 }
 
 /* Searchbar styles */
 
 .input__container {
   position: relative;
+}
+
+.search-places {
+  background-color: #fffff0;
+  display: block;
+  font-size: 15px;
+  line-height: 20px;
+  margin: 20px auto;
+  width: 80%;
 }
 
 #clearQuery svg {
@@ -191,7 +207,7 @@ body {
   padding-left: 30px;
 }
 .place-list__item:hover {
-  background-color: lightblue;
+  background-color: #add8e6;
   color: #333;
   cursor: pointer;
 }
@@ -201,7 +217,7 @@ body {
   cursor: pointer;
 }
 .place-list__item:before {
-  border: 1px solid ivory;
+  border: 1px solid #fffff0;
   content: "";
   display: inline-block;
   margin: 5px 10px 5px auto;
@@ -217,25 +233,15 @@ body {
 
 .selected-li {
   background-color: #10637c;
-  color: ivory;
-}
-
-.search-places {
-  background-color: ivory;
-  display: block;
-  font-size: 15px;
-  line-height: 20px;
-  margin: 20px auto;
-  width: 80%;
+  color: #fffff0;
 }
 
 /* Infowindow styles */
 
 .infowindow-heading {
   background-color: #333;
-  color: ivory;
+  color: #fffff0;
   padding: 5px;
-  /* letter-spacing: 1px; */
   text-align: center;
 }
 
@@ -282,7 +288,7 @@ body {
 
 .infowindow-likes {
   background-color: #10637c;
-  color: ivory;
+  color: #fffff0;
   padding: 2px;
   text-align: center;
   width: 70px;
@@ -303,7 +309,7 @@ body {
 /* Footer Styles */
 
 .footer {
-  background-color: lightblue;
+  background-color: #add8e6;
   border: 1px solid #333;
   color: #333;
   height: 30px;
@@ -319,11 +325,4 @@ body {
 .foursquare-attribution {
   height: 8px;
   margin-left: 30px;
-}
-
-.error-msg {
-  background-color: #10637c;
-  color: ivory;
-  padding: 5px;
-  margin-bottom: 5px;
 }

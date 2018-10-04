@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { GoogleApiWrapper } from "google-maps-react";
 import "./App.css";
 import MapContainer from "./components/MapContainer.js";
-import Hamburger from "./components/Hamburger.js";
+import HamburgerButton from "./components/HamburgerButton.js";
 
 // import Google Maps API key from environment variable
 const GM_API_KEY = `${process.env.REACT_APP_GM_API_KEY}`;
@@ -52,7 +52,7 @@ class App extends Component {
         {/* Header */}
         <header className="main-header">
           <h1>My Neighborhood Map</h1>
-          <Hamburger toggleMenu={this.toggleMenu} />
+          <HamburgerButton toggleMenu={this.toggleMenu} />
         </header>
         {/* Placelist & Map */}
         <MapContainer
