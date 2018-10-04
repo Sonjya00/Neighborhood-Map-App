@@ -116,8 +116,8 @@ body {
   cursor: pointer;
   fill: #333;
   position: absolute;
-  top: 0;
-  right: 35px;
+  top: 2px;
+  right: 10%;
 }
 
 /* Placelist Styles */
