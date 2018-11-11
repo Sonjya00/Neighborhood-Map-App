@@ -8,9 +8,9 @@ class PlaceList extends Component {
   // Call the function to select the list item
   // if the user clicks on it with the mouse
   handleClick(place, index) {
-    this.setState({
+    this.setState(() => ({
       cursor: index
-    });
+    }));
     this.props.selectPlaceFromList(place);
   }
 
@@ -23,9 +23,9 @@ class PlaceList extends Component {
         // set time out to prevent the focus function to run before the click function,
         // causing both the element selected with the mouse and the first element automatically
         // selected by the focus, to animate at the same time.
-        this.setState({
+        this.setState(() => ({
           cursor: 0
-        });
+        }));
         this.props.selectLiWithKeyboard(0);
       }
     }, 200);
@@ -56,18 +56,18 @@ class PlaceList extends Component {
   // Update the query based on the value of the input
   // and reset the cursor value so that no list item/marker are selected
   updateQuery(query) {
-    this.setState({
+    this.setState(() => ({
       cursor: null
-    });
+    }));
     this.props.queryFilter(query.trim());
   }
 
   // Called by onclick or by onkeydown after handleKeyDownOnClear().
   // Reset the cursor and call another function to clear the query
   handleClearQuery = () => {
-    this.setState({
+    this.setState(() => ({
       cursor: null
-    });
+    }));
     this.props.clearQuery();
   };
 

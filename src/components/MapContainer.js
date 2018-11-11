@@ -70,9 +70,9 @@ export default class MapContainer extends Component {
       allMarkers.push(marker);
     });
     // Store all markers in the state to retrieve later
-    this.setState({
+    this.setState(() => ({
       allMarkers: allMarkers
-    });
+    }));
     // Adjust map to fit all the markers
     this.map.fitBounds(bounds);
   };
@@ -96,9 +96,9 @@ export default class MapContainer extends Component {
       marker.setIcon(activeIcon);
       marker.setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(() => marker.setAnimation(google.maps.Animation.NULL), 300);
-      this.setState({
+      this.setState(() => ({
         activeMarker: marker
-      });
+      }));
       this.populateInfoWindow(marker);
     }
   };
@@ -130,15 +130,15 @@ export default class MapContainer extends Component {
     infowindow.addListener("closeclick", () => {
       const defaultIcon = this.makeMarkerIcon("AED8E5");
       marker.setIcon(defaultIcon);
-      this.setState({
+      this.setState(() => ({
         infowindow: null,
         activeMarker: null
-      });
+      }));
     });
     // Store the current infowindow in the state
-    this.setState({
+    this.setState(() => ({
       infowindow: infowindow
-    });
+    }));
     // Set temporary content for the infowindow while the data is loading
     infowindow.setContent(`<div>Loading data...</div>`);
     // Fetch the data
@@ -325,7 +325,7 @@ export default class MapContainer extends Component {
     const match = new RegExp(escapeRegExp(query), "i");
     // Deselect any currently active marker/infowindow, set the query value,
     // and change showingPlaces
-    this.setState({
+    this.setState(() => ({
       activeMarker: null,
       infowindow: null,
       query: query,
@@ -333,7 +333,7 @@ export default class MapContainer extends Component {
       showingPlaces: this.state.allPlaces.filter(place =>
         match.test(place.name)
       )
-    });
+    }));
     // Filter the markers and show/hide them
     this.state.allMarkers.forEach(marker => {
       return match.test(marker.title)
@@ -355,12 +355,12 @@ export default class MapContainer extends Component {
     this.handleActiveMarker(null);
     // Reset query and any active marker/infowindow.
     // Set the showing places to all places
-    this.setState({
+    this.setState(() => ({
       activeMarker: null,
       infowindow: null,
       query: "",
       showingPlaces: this.state.allPlaces
-    });
+    }));
   };
 
   render() {

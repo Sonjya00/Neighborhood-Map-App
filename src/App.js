@@ -33,17 +33,17 @@ class App extends Component {
   // The menu is open or closed from the start depending on the
   // viewport width
   componentDidMount() {
-    this.setState({
+    this.setState(() => ({
       menuOpen: window.innerWidth < 550 ? false : true
-    });
+    }));
   }
 
   // Open and close the menu. Triggered by the hamburger,
   // and by clicking on a list item (only if the menu takes up 100% of the viewport)
   toggleMenu = () => {
-    this.setState({
-      menuOpen: !this.state.menuOpen
-    });
+    this.setState(prevState => ({
+      menuOpen: !prevState.menuOpen
+    }));
   };
 
   render() {
