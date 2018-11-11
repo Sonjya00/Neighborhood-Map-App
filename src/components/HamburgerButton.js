@@ -15,6 +15,7 @@ class HamburgerButton extends Component {
       <a
         id="menu"
         role="button"
+        href="#menu"
         aria-label="Toggle Menu"
         onClick={() => this.props.toggleMenu()}
         onKeyDown={this.handleKeyDown}

@@ -118,6 +118,7 @@ class PlaceList extends Component {
           <a
             id="clearQuery"
             role="button"
+            href="#menu"
             aria-label="Clear Searchbox"
             onClick={this.handleClearQuery}
             onKeyDown={this.handleKeyDownOnClear}

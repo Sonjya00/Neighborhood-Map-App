@@ -230,6 +230,7 @@ export default class MapContainer extends Component {
                       ${panoContent}
                     </div>`
                 );
+                // eslint-disable-next-line
                 const panoramaOptions = {
                   position: nearStreetViewLocation,
                   pov: {
@@ -240,6 +241,7 @@ export default class MapContainer extends Component {
                   disableDefaultUI: true
                   // clickToGo: false
                 };
+                // eslint-disable-next-line
                 const panorama = new google.maps.StreetViewPanorama(
                   document.getElementById("pano"),
                   panoramaOptions
